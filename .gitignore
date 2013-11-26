@@ -1,3 +1,5 @@
+/testDB
+/.databaseTest.py.kate-swp
 *.py[cod]
 
 # C extensions
