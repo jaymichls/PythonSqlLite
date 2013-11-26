@@ -1,4 +1,4 @@
 PythonSqlLite
 =============
 
-An API between python and sql lite 
+A wrapper for the python sqlite API
