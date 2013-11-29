@@ -5,7 +5,6 @@
 
 import dbConnection as dbcon
 
-
 testDB = dbcon.Database ('testDB')
 
 testTable = dict(ShowName='TEXT',Rating='TEXT') 
@@ -15,14 +14,15 @@ table = 'tvShow'
 testDB.dropTable(table)
 
 
-print testDB.con
+
 testDB.createTable(table,testTable) 
 
-print 'insert'
-testDB.insertInto(table, 'sweet')
+testDB.insertInto(table, 'test')
 
-print 'select'
-testDB.selectFrom(table)
+#testDB.selectFrom(table)
 
 testDB.closeDB()
 
+
+# SELECT 1 FROM tvShow
+# SELECT 1 FROM sqlite_master WHERE type='table' AND name='tvShow'
