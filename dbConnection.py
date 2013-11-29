@@ -40,9 +40,14 @@ class Database:
 		# maybe pass colname type as a string need to be separated by ','
 		if self.con:
 			with self.con:
-				cur = self.con.cursor()
-				if self.debug:print listOfColsAndTypes				
-				cur.execute("CREATE TABLE %s(test text)"%(tableName))
+				cur = self.con.cursor()	
+				query = "CREATE TABLE %s("%(tableName)
+				for columns, types in listOfColsAndTypes.items():
+					if not query.endswith('('): query += ','
+					query += "%s %s"%(columns, types)
+				query += ")"
+				if self.debug:print query 
+				cur.execute(query)
 		else:
 			noConnection()
 			
