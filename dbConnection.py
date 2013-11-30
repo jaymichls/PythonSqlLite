@@ -41,12 +41,15 @@ class Database:
 		if self.con:
 			with self.con:
 				cur = self.con.cursor()	
+				
 				query = "CREATE TABLE %s("%(tableName)
-				for columns, types in listOfColsAndTypes.items():
-					if not query.endswith('('): query += ','
-					query += "%s %s"%(columns, types)
+				for column, dataType in listOfColsAndTypes.items():
+					if not query.endswith('('): query += ','	# append a comma to seperat values
+					query += "%s %s"%(column, dataType)
 				query += ")"
+				
 				if self.debug:print query 
+				
 				cur.execute(query)
 		else:
 			noConnection()
@@ -66,14 +69,31 @@ class Database:
 				for row in cur.execute("SELECT * FROM %s"%(tableName)):
 					if self.debug:print row
 								
-	def insertInto(self, tableName, value):
+	def insertInto(self, tableName, values):
+		# TODO allow insert of one or many columns in any order..
 		if self.con:
 			with self.con:
 				cur = self.con.cursor()
-				cur.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='%s'"%(tableName))
-				if cur.fetchone() == 1:
-					cur.execute("INSERT INTO %s VALUES('sweet')"%(tableName))
-					self.con.commit()
+				#cur.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='%s'"%(tableName))
+				#if cur.fetchone() == 1:
+				
+				query = "INSERT INTO %s ("%(tableName)
+				data = ") VALUES ("				
+				for column, value in values.items():
+					if not query.endswith('('): 
+						query += ','	# append a comma to seperat values
+						data += ','
+						
+					query += "%s"%(column)					
+					if isinstance(value,str):data += "'%s'"%(value)
+					else:data += "%s"%(value)
+					
+				query += data + ')'
+				
+				if self.debug:print query
+				
+				cur.execute(query)
+				self.con.commit()
 	
 	def noConnection(self):
 		#Something should happen if there is no connection. 
