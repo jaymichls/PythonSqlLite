@@ -10,7 +10,7 @@ class Database:
 		if database: self.database = database
 		else: return
 		self.con = None
-		self.debug = 1
+		self.debug = 0
 		self.connectToDB()
 				
 	def connectToDB(self):
@@ -32,7 +32,17 @@ class Database:
 			print 'Connection Closed.'
 	
 	def createSchema(self, schema): 
-	#TODO figure out how to store the schema
+		#TODO take a list of dictionaries and create each table seperatly. 
+		#might have to be a touple of tablename dictionary pairs, or dictionary of dictionaries. 
+		# might want to accecpt a better way to store the schema. 
+		
+		#Two options of creation might be good having 
+		'''
+		column, type
+		column1, type 
+		'''
+		#for table in schema:
+		#	createTable(table,)
 		return
 	
 	def createTable(self, tableName, listOfColsAndTypes):
@@ -41,15 +51,22 @@ class Database:
 		if self.con:
 			with self.con:
 				cur = self.con.cursor()	
-				if self.tableExists(cur, tableName):
+				if not self.tableExists(cur, tableName):
+					print 'Creating Table:',tableName
 					query = "CREATE TABLE %s("%(tableName)
-					for column, dataType in listOfColsAndTypes.items():
-						if not query.endswith('('): query += ','	# append a comma to seperat values
-						query += "%s %s"%(column, dataType)
-					query += ")"
+					if type(listOfColsAndTypes) == dict:
+						for column, dataType in listOfColsAndTypes.items():
+							if not query.endswith('('): query += ','	# append a comma to seperat values
+							query += "%s %s"%(column, dataType)
+						query += ")"
+					elif type(listOfColsAndTypes) == list:
+						for column in listOfColsAndTypes:
+							if not query.endswith('('): query += ','
+							query += "%s"%(column)
+						query += ")"
 					
 					if self.debug:print query 
-					
+						
 					cur.execute(query)
 		else:
 			noConnection()
