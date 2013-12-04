@@ -10,7 +10,7 @@ class Database:
 		if database: self.database = database
 		else: return
 		self.con = None
-		self.debug = 0
+		self.debug = 1
 		self.connectToDB()
 				
 	def connectToDB(self):
@@ -45,7 +45,7 @@ class Database:
 		#	createTable(table,)
 		return
 	
-	def createTable(self, tableName, listOfColsAndTypes):
+	def createTable(self, tableName, listOfColsAndTypes, uniqueColumns):
 		# TODO: Create a table given the table SELECT "test" FROM tvShowame and the columns and column types.
 		# maybe pass colname type as a string need to be separated by ','
 		if self.con:
@@ -53,17 +53,25 @@ class Database:
 				cur = self.con.cursor()	
 				if not self.tableExists(cur, tableName):
 					print 'Creating Table:',tableName
-					query = "CREATE TABLE %s("%(tableName)
+					query = "CREATE TABLE IF NOT EXISTS %s("%(tableName)
 					if type(listOfColsAndTypes) == dict:
 						for column, dataType in listOfColsAndTypes.items():
 							if not query.endswith('('): query += ','	# append a comma to seperat values
 							query += "%s %s"%(column, dataType)
-						query += ")"
+						
 					elif type(listOfColsAndTypes) == list:
 						for column in listOfColsAndTypes:
 							if not query.endswith('('): query += ','
 							query += "%s"%(column)
-						query += ")"
+					
+					if uniqueColumns:
+						query += ", UNIQUE ("
+						for column in uniqueColumns:
+							if not query.endswith('('): query += ','	# append a comma to seperat values
+							query += "%s"%(column)
+						query += ") ON CONFLICT REPLACE"
+						
+					query += ")"
 					
 					if self.debug:print query 
 						
