@@ -121,19 +121,25 @@ class Database:
 					
 					cur.execute(query)
 					self.con.commit()
-		
+	
+	@staticmethod
+	def getCursor(db):
+		if db.con:
+			with db.con:
+				return db.con.cursor()
+
 	def noConnection(self):
 		#Something should happen if there is no connection. 
 		if self.debug is 1:print 'There is no connection, attempting to connect.'
 		connectToDB(self)
 	
-	def tableExists(self, cur, tableName):
+	@staticmethod
+	def tableExists(cur, tableName):
 		try:			
 			cur.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='%s'"%(tableName))
 			if cur.fetchone()[0] == 1: 
 				return True
 		except Exception, e: 
-			if self.debug:print "An Sql error occured: ",e.args[0]	
-			print "Table:",tableName," doesn't exist"
+			print "An Sql error occured: ",e.args[0]				
 		return False
 			
