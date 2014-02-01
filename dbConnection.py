@@ -17,20 +17,19 @@ class Database:
 		# Check to see if there is already an existing connection
 		
 		if self.con:
-			print 'Connection already exists.'
+			print('Connection already exists.')
 			return
 		
 		try:			
 			self.con = self.lite.connect(self.database)
-			print 'Connection established.'
-		except self.lite.Error, e:
-			if self.debug:print "SQL Error %s:" % e.args[0]
-			
+			print('Connection established.')
+		except self.lite.Error as e:
+			if self.debug:print("SQL Error %s:" % e.args[0])
 	def closeDB(self):
 		if self.con:
 			self.con.close()
-			print 'Connection Closed.'
 	
+			print('Connection Closed.')
 	def createSchema(self, schema): 
 		#TODO take a list of dictionaries and create each table seperatly. 
 		#might have to be a touple of tablename dictionary pairs, or dictionary of dictionaries. 
@@ -52,7 +51,7 @@ class Database:
 			with self.con:
 				cur = self.con.cursor()	
 				if not self.tableExists(cur, tableName):
-					print 'Creating Table:',tableName
+					print('Creating Table:',tableName)
 					query = "CREATE TABLE IF NOT EXISTS %s("%(tableName)
 					if type(listOfColsAndTypes) == dict:
 						for column, dataType in listOfColsAndTypes.items():
@@ -85,8 +84,8 @@ class Database:
 				cur = self.con.cursor()
 				if self.tableExists(cur, tableName):
 					cur.execute("DROP TABLE %s"%(tableName))
-					if self.debug:print "Table %s was dropped."%(tableName)
 					
+					if self.debug:print("Table %s was dropped."%(tableName))
 	def selectFrom(self, tableName): 
 		#TODO look into row factory and text factory 
 		if self.con:
@@ -94,8 +93,8 @@ class Database:
 				cur = self.con.cursor()
 				if self.tableExists(cur, tableName):
 					for row in cur.execute("SELECT * FROM %s"%(tableName)):
-						if self.debug:print row
 									
+						if self.debug:print(row)
 	def insertInto(self, tableName, values):
 		# TODO allow insert of one or many columns in any order..
 		if self.con:
@@ -117,7 +116,7 @@ class Database:
 						
 					query += data + ')'
 					
-					if self.debug:print query
+					if self.debug:print(query)
 					
 					cur.execute(query)
 					self.con.commit()
@@ -130,7 +129,7 @@ class Database:
 
 	def noConnection(self):
 		#Something should happen if there is no connection. 
-		if self.debug is 1:print 'There is no connection, attempting to connect.'
+		if self.debug:print('There is no connection, attempting to connect.')
 		connectToDB(self)
 	
 	@staticmethod
@@ -139,7 +138,7 @@ class Database:
 			cur.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='%s'"%(tableName))
 			if cur.fetchone()[0] == 1: 
 				return True
-		except Exception, e: 
-			print "An Sql error occured: ",e.args[0]				
+		except Exception as e:                        
+			print("An Sql error occured: ",e.args[0])
 		return False
 			
