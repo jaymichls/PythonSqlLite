@@ -44,6 +44,17 @@ class TestTableFunctions(unittest.TestCase):
 		self.db.selectFrom(self.tableTwoName)
 		self.assertTrue(True)
 
+	def test_table_drop(self):
+		print 'Testing drop table'
+
+	def test_table_alter(self):
+		print 'Testing alter table'
+
+	def test_table_column_alter(self):
+		print 'Testing alter column'
+
+	def test_table_constraints(self):
+		print 'Testing table constraints'
 
 	def tearDown(self):
 		print 'Testing dropping tables'
@@ -54,6 +65,25 @@ class TestTableFunctions(unittest.TestCase):
 		
 		self.db.dropTable(self.tableTwoName)
 		self.assertFalse(dbcon.Database.tableExists(self.cur, self.tableTwoName))
+
+class TestQueryFunctions(unittest.TestCase):
+
+	def setUp(self):
+		self.tableOneName = 'TestTableOne'
+		self.tableOneColumns = dict(ColumnOne='TEXT',ColumnTwo='INTEGER')
+		self.db.createTable(self.tableOneName, self.tableOneColumns)
+
+	def test_query_select(self):
+		print 'Testing select from menthod'
+
+	def test_query_where(self):
+		print 'Testing select from where'
+
+	def test_table_insert(self):
+		print 'Testing insertion'
+
+	def test_table_update(self):
+		print 'Testing Update function'
 
 if __name__ == '__main__':
     unittest.main()
